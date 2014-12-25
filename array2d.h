@@ -112,7 +112,7 @@ public:
             return;
 
         for(int i = 0; i < width; i++)
-            for(j = 0; j < height; j++)
+            for(int j = 0; j < height; j++)
                 (*this)(iOffset + i, jOffset + j) = src(i, j);
     }
 
