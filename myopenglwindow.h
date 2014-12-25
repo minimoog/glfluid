@@ -25,6 +25,8 @@
 
 #include <QOpenGLWindow>
 #include <QOpenGLFunctions>
+#include <QOpenGLShaderProgram>
+#include "fluid.h"
 
 class MyOpenGLWindow : public QOpenGLWindow, protected QOpenGLFunctions
 {
@@ -35,6 +37,15 @@ public:
     void initializeGL() Q_DECL_OVERRIDE;
     void paintGL() Q_DECL_OVERRIDE;
     void resizeGL(int w, int h) Q_DECL_OVERRIDE;
+
+private:
+    Fluid m_fluid;
+    GLuint m_vbo;
+    //GLuint m_vertexShader;
+    //GLuint m_fragmentShader;
+    QOpenGLShaderProgram m_program;
+    int m_positionAttributeLocation;
+    int m_normalAttributeLocation;
 };
 
 #endif // MYOPENGLWINDOW_H

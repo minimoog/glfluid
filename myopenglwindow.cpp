@@ -22,7 +22,28 @@
 
 #include "myopenglwindow.h"
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
+const char vertexShader[] =
+"attribute vec3 vertex;\n"
+"attribute vec3 normal;\n"
+"\n"
+"void main()\n"
+"{\n"
+"   gl_Position = vec4(vertex, 1.0);\n"
+"}\n";
+
+const char fragmentShader[] =
+"//precision mediump float;\n"
+"\n"
+"void main()\n"
+"{\n"
+"   gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);\n"
+"}\n";
+
 MyOpenGLWindow::MyOpenGLWindow()
+    : m_fluid(10, 10, 0.1, 0.1, 1.0, 0.0),
+      m_vbo(0)
 {
 }
 
@@ -34,6 +55,25 @@ MyOpenGLWindow::~MyOpenGLWindow()
 void MyOpenGLWindow::initializeGL()
 {
     initializeOpenGLFunctions();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+
+    glGenBuffers(1, &m_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    glBufferData(GL_ARRAY_BUFFER, 10 * 10 * sizeof(Vertex), NULL, GL_STREAM_DRAW);
+
+    //shader
+    m_program.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShader);
+    m_program.addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShader);
+    m_program.link();
+    m_program.bind();
+
+    m_positionAttributeLocation =  m_program.attributeLocation("vertex");
+    m_normalAttributeLocation = m_program.attributeLocation("normal");
+
+    glEnableVertexAttribArray(m_positionAttributeLocation);
+    glEnableVertexAttribArray(m_normalAttributeLocation);
 }
 
 void MyOpenGLWindow::paintGL()
@@ -41,6 +81,27 @@ void MyOpenGLWindow::paintGL()
     glViewport(0, 0, width(), height());
 
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+
+    // ### TODO: fill buffer
+    glVertexAttribPointer(m_positionAttributeLocation,
+                          3,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(Vertex),
+                          0);
+
+    glVertexAttribPointer(m_normalAttributeLocation,
+                          3,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(Vertex),
+                          BUFFER_OFFSET(sizeof(TVec3)));
+
+    for (int i = 0; i < 10; ++i) {
+        // ### TODO: glDrawArrays(GL_TRIANGLE_STRIP, 0, 10);
+    }
 }
 
 void MyOpenGLWindow::resizeGL(int w, int h)
