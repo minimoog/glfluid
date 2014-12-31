@@ -41,6 +41,7 @@ public:
 private:
     Fluid m_fluid;
     GLuint m_vbo;
+    GLuint m_ibo;
     //GLuint m_vertexShader;
     //GLuint m_fragmentShader;
     QOpenGLShaderProgram m_program;

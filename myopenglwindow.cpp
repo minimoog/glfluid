@@ -21,24 +21,32 @@
 */
 
 #include "myopenglwindow.h"
+#include <QScopedArrayPointer>
 
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 
 const char vertexShader[] =
-"attribute vec3 vertex;\n"
-"attribute vec3 normal;\n"
+"#version 150\n"
+"\n"
+"in vec3 vertex;\n"
+"in vec3 normal;\n"
+"out vec4 nf;\n"
 "\n"
 "void main()\n"
 "{\n"
+"   nf = vec4(normal, 1.0);\n"
 "   gl_Position = vec4(vertex, 1.0);\n"
 "}\n";
 
 const char fragmentShader[] =
+"#version 150\n"
+"in vec4 nf;\n"
+"out vec4 fragColor;\n"
 "//precision mediump float;\n"
 "\n"
 "void main()\n"
 "{\n"
-"   gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);\n"
+"   fragColor = vec4(1.0, 1.0, 0.0, 1.0);\n"
 "}\n";
 
 MyOpenGLWindow::MyOpenGLWindow()
@@ -62,6 +70,41 @@ void MyOpenGLWindow::initializeGL()
     glGenBuffers(1, &m_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER, 10 * 10 * sizeof(Vertex), NULL, GL_STREAM_DRAW);
+
+    //total indices = (totalX * 2 + 2) * (totalZ - 1)
+
+    glGenBuffers(1, &m_ibo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLshort) * (10 * 2 + 2) * (10 - 1), NULL, GL_STATIC_DRAW);
+
+    QScopedArrayPointer<GLshort> indexes(new GLshort[(10 * 2 + 2) * (10 - 1)]);
+
+    int indexOffset = 0;
+    for (int zindex = 0; zindex < 10 - 1; zindex++) {
+
+        GLshort index = 0;
+
+        for (int xindex = 0; xindex < 10; xindex++) {
+            index = xindex + (zindex * 10);   //numX
+            indexes[indexOffset] = index;
+            indexOffset++;
+
+            index = xindex + ((zindex + 1) * 10); //numX
+            indexes[indexOffset] = index;
+            indexOffset++;
+        }
+
+        //copy of previous one
+        indexes[indexOffset] = index;
+        indexOffset++;
+
+        //place in first one for next row
+        index = 0 + ((zindex + 1) * 10);     //numX
+        indexes[indexOffset] = index;
+        indexOffset++;
+    }
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLshort) * (10 * 2 + 2) * (10 - 1), indexes.data(), GL_STATIC_DRAW);
 
     //shader
     m_program.addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShader);
