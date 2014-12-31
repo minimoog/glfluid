@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     math/tquat.cpp \
     math/tvec3.cpp \
     math/tvec4.cpp \
-    fluid.cpp
+    fluid.cpp \
+    camera.cpp
 
 HEADERS  += \
     myopenglwindow.h \
@@ -32,4 +33,9 @@ HEADERS  += \
     math/tvec2.h \
     math/tvec3.h \
     math/tvec4.h \
-    fluid.h
+    fluid.h \
+    camera.h
+
+DISTFILES += \
+    simple.vert \
+    simple.frag

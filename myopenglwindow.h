@@ -27,6 +27,7 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include "fluid.h"
+#include "camera.h"
 
 class MyOpenGLWindow : public QOpenGLWindow, protected QOpenGLFunctions
 {
@@ -42,11 +43,15 @@ private:
     Fluid m_fluid;
     GLuint m_vbo;
     GLuint m_ibo;
+    GLuint m_vao;
     //GLuint m_vertexShader;
     //GLuint m_fragmentShader;
     QOpenGLShaderProgram m_program;
     int m_positionAttributeLocation;
     int m_normalAttributeLocation;
+    Camera m_camera;
+    int m_worldMatrixPosition;
+    int m_projectionMatrixPosition;
 };
 
 #endif // MYOPENGLWINDOW_H

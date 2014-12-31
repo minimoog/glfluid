@@ -23,8 +23,8 @@
 #include "fluid.h"
 
 Fluid::Fluid(int n, int m, float distance, float timeStep, float velocity, float viscosity)
-    :	width(n),
-      height(m),
+    :	m_width(n),
+      m_height(m),
       buffer0(n, m),
       buffer1(n, m),
       renderBuffer(0),
@@ -79,8 +79,8 @@ void Fluid::evaluate(void)
         previous = buffer0;
     }
 
-    for(int j = 1; j < height - 1; j++){
-        for(int i = 1; i < width - 1; i++){
+    for(int j = 1; j < m_height - 1; j++){
+        for(int i = 1; i < m_width - 1; i++){
             previous(i, j).position.y = k1 * current(i, j).position.y +
                                         k2 * previous(i, j).position.y +
                                         k3 * (current(i + 1, j).position.y +
@@ -92,8 +92,8 @@ void Fluid::evaluate(void)
 
     renderBuffer = 1 - renderBuffer;
 
-    for(int j = 1; j < height - 1; j++){
-        for(int i = 1; i < width - 1; i++){
+    for(int j = 1; j < m_height - 1; j++){
+        for(int i = 1; i < m_width - 1; i++){
             previous(i, j).normal.x = previous(i - 1, j).position.y - previous(i + 1, j).position.y;
             previous(i, j).normal.z = previous(i, j - 1).position.y - previous(i, j + 1).position.y;
             previous(i, j).normal.normalize();
@@ -130,4 +130,12 @@ void Fluid::setViscosity(float viscosity)
 {
     mu = viscosity;
     calculateCoef();
+}
+
+const Vertex *Fluid::bufferData() const
+{
+    if (renderBuffer == 1)
+        return buffer1.pointer();
+    else
+        return buffer0.pointer();
 }

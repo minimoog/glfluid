@@ -47,11 +47,14 @@ public:
 	void	setTimeStep(float timeStep);
 	void	setVelocity(float velocity);
 	void	setViscosity(float viscosity);
+    const Vertex* bufferData() const;
+    int width() const { return m_width; }
+    int height() const { return m_height; }
 
 private:
 	
-	int		width;
-	int		height;
+    int		m_width;
+    int		m_height;
     Array2D<Vertex> buffer0;
     Array2D<Vertex> buffer1;
 
