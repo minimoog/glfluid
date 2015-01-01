@@ -55,8 +55,7 @@ private:
 	
     int		m_width;
     int		m_height;
-    Array2D<Vertex> buffer0;
-    Array2D<Vertex> buffer1;
+    Array2D<Vertex> buffer[2];
 
 	float	d, c, mu, t;
 	
