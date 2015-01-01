@@ -90,8 +90,9 @@ void Fluid::evaluate(void)
 
     for(int j = 1; j < m_height - 1; j++){
         for(int i = 1; i < m_width - 1; i++){
-            buffer[renderBuffer](i, j).normal.x = buffer[renderBuffer](i - 1, j).position.z - buffer[renderBuffer](i + 1, j).position.z;
-            buffer[renderBuffer](i, j).normal.y = buffer[renderBuffer](i, j - 1).position.z - buffer[renderBuffer](i, j + 1).position.z;
+            buffer[renderBuffer](i, j).normal.x = (buffer[renderBuffer](i - 1, j).position.z - buffer[renderBuffer](i + 1, j).position.z) / d;
+            buffer[renderBuffer](i, j).normal.y = (buffer[renderBuffer](i, j - 1).position.z - buffer[renderBuffer](i, j + 1).position.z) / d;
+            buffer[renderBuffer](i, j).normal.z = 2.0f;
             buffer[renderBuffer](i, j).normal.normalize();
 
             buffer[1 - renderBuffer](i, j).normal.x = buffer[renderBuffer](i, j).normal.x;

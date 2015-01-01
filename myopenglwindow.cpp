@@ -51,12 +51,12 @@ const char fragmentShader[] =
 "\n"
 "void main()\n"
 "{\n"
-"   float diffuseFactor = max(dot(normalize(normalOut), -normalize(lightDirection)), 0.0);\n"
+"   float diffuseFactor = max(dot(normalize(normalOut), -lightDirection), 0.0);\n"
 "   gl_FragColor = diffuseFactor * vec4(1.0, 1.0, 1.0, 1.0);\n"
 "}\n";
 
 MyOpenGLWindow::MyOpenGLWindow()
-    : m_fluid(10, 10, 0.1f, 0.05f, 1.0f, 0.5f),
+    : m_fluid(10, 10, 0.1f, 0.005f, 1.0f, 0.5f),
       m_vbo(0),
       m_projectionMatrixPosition(-1)
 {
